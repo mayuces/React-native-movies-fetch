@@ -7,10 +7,19 @@ import MovieScreen from "./pages/MovieScreen";
 
 const Stack = createNativeStackNavigator();
 
+const globalScreenOptions = {
+  colors: {
+    primary: "#25D366",
+  },
+  headerStyle: { backgroundColor: "#25D366" },
+  headerTitleStyle: { color: "white" },
+  headerTintColor: "white",
+};
+
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator screenOptions={globalScreenOptions}>
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Movie" component={MovieScreen} />
       </Stack.Navigator>

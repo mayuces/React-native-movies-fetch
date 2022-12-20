@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, Text, View, KeyboardAvoidingView } from "react-native";
 import { Image, Input, Button } from "@rneui/base";
 import FindMovie from "../components/FindMovie";
 
@@ -17,15 +18,21 @@ const HomeScreen = ({ navigation }) => {
   };
 
   return (
-    <View>
+    <KeyboardAvoidingView style={styles.container}>
+      <StatusBar style="light" />
       <View>
         <FindMovie onAdd={addMovie} />
+        {/* <Button onPress={() => navigation.navigate("Movie")} title="Movie" /> */}
       </View>
-      <Button onPress={() => navigation.navigate("Movie")} title="Movie" />
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
 export default HomeScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 10,
+  },
+});

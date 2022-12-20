@@ -1,14 +1,15 @@
 import {
-  Button,
   FlatList,
   SafeAreaView,
   StyleSheet,
-  Text,
   TextInput,
   View,
 } from "react-native";
 import React, { useState } from "react";
 import { getMovie } from "../api";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome";
+import { Input, Button, Text } from "@rneui/base";
+import MovieCard from "./MovieCard";
 
 const FindMovie = ({ onAdd }) => {
   const [query, setQuery] = useState("");
@@ -29,13 +30,11 @@ const FindMovie = ({ onAdd }) => {
 
   const handleSubmit = async () => {
     setIsLoading(true);
-    const data = await getMovie(query);
+    try {
+      const data = await getMovie(query);
 
-    setIsLoading(false);
+      setIsLoading(false);
 
-    if ("Error" in data) {
-      setError(data.Error);
-    } else {
       const loadedMovie = {
         title: data.Title,
         description: data.Plot,
@@ -49,27 +48,52 @@ const FindMovie = ({ onAdd }) => {
 
       console.log(loadedMovie);
       setMovie(loadedMovie);
+    } catch (error) {
+      setError(data.Error);
     }
   };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
-        <TextInput
+        <Input
           style={styles.textInputStyle}
           onChangeText={(text) => handleQuery(text)}
           value={query}
-          underlineColorAndroid="transparent"
           placeholder="Search Here"
+          leftIcon={
+            <FontAwesome5
+              name="search"
+              type="antdesign"
+              size={24}
+              color="black"
+            />
+          }
         />
-        <Button onPress={handleSubmit} title="Add to list" />
+        <Button onPress={handleSubmit} title="Search" color="#25D366" />
+        {/* {error && (
+          <View>
+            <Text>Couldnt find a movie with such a title</Text>
+          </View>
+        )} */}
 
-        {/* <FlatList
-          data={filteredDataSource}
-          keyExtractor={(item, index) => index.toString()}
-          ItemSeparatorComponent={ItemSeparatorView}
-          renderItem={ItemView}
-        /> */}
+        {movie && (
+          <View>
+            <Text h2>Preview</Text>
+            <MovieCard movie={movie} />
+            <Button
+              title="Add to List"
+              color="#25D366"
+              style={{ marginTop: 10 }}
+              type="outline"
+              onPress={() => onAddMovie(movie)}
+              titleStyle={{ color: "#25D366" }}
+              buttonStyle={{ borderColor: "#25D366" }}
+            >
+              Add to the list
+            </Button>
+          </View>
+        )}
       </View>
     </SafeAreaView>
   );
@@ -77,4 +101,10 @@ const FindMovie = ({ onAdd }) => {
 
 export default FindMovie;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "white",
+    padding: 30,
+    height: "100%",
+  },
+});
