@@ -1,14 +1,17 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, FlatList } from "react-native";
 import React from "react";
 import MovieCard from "./MovieCard";
 
-const MovieList = ({ movies }) => {
+const MovieList = ({ movies, navigation }) => {
   return (
-    <View>
-      {movies.map((movie) => (
-        <MovieCard key={movie.imdbId} movie={movie} />
-      ))}
-    </View>
+    <FlatList
+      data={movies}
+      renderItem={({ item }) => (
+        <MovieCard key={item.imdbId} movie={item} navigation={navigation} />
+      )}
+      keyExtractor={(item) => item.imdbId}
+      horizontal
+    />
   );
 };
 

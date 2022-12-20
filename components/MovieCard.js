@@ -1,17 +1,34 @@
-import {
-  Linking,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { Image, Input, Button } from "@rneui/base";
+import { Linking, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Image, Button, Text } from "@rneui/base";
 import React from "react";
+import { useNavigation } from "@react-navigation/native";
 
 const MovieCard = ({ movie, navigation }) => {
+  const handleCardLink = () => {
+    nav.navigate("Movie", movie);
+  };
+
+  const nav = useNavigation();
+
   return (
-    <TouchableOpacity onPress={() => console.log("here")}>
-      <View style={styles.container}>
+    <TouchableOpacity style={styles.mainContainer} onPress={handleCardLink}>
+      <View style={styles.item}>
+        <Image
+          style={styles.poster}
+          source={{
+            uri: `${movie.imgUrl}`,
+          }}
+        />
+        <Text
+          style={{
+            width: 171,
+            fontSize: 13,
+          }}
+        >
+          {movie.title}
+        </Text>
+      </View>
+      {/* <View style={styles.container}>
         <View style={styles.imageStyler}>
           <Image
             style={styles.imageContainer}
@@ -30,7 +47,7 @@ const MovieCard = ({ movie, navigation }) => {
               <Text style={styles.titleText}>{movie.title}</Text>
             </View>
           </View>
-          <View>
+          <View style={styles.descriptionContainer}>
             <Text>{movie.description}</Text>
             <Text
               style={{ color: "blue" }}
@@ -40,7 +57,7 @@ const MovieCard = ({ movie, navigation }) => {
             </Text>
           </View>
         </View>
-      </View>
+      </View> */}
     </TouchableOpacity>
   );
 };
@@ -48,6 +65,23 @@ const MovieCard = ({ movie, navigation }) => {
 export default MovieCard;
 
 const styles = StyleSheet.create({
+  item: {
+    flexDirection: "column",
+    flexWrap: "wrap",
+    marginRight: 10,
+  },
+  poster: {
+    width: 171,
+    height: 255.5,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  mainContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
   container: {
     flex: 1,
     backgroundColor: "#fff",
@@ -55,6 +89,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 10,
     marginTop: 20,
+    width: 300,
+    borderRadius: 10,
 
     shadowColor: "#000",
     shadowOffset: {
@@ -83,12 +119,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
+    marginTop: 10,
   },
 
   imageContainer: {
     width: 200,
     height: 200,
   },
+
+  descriptionContainer: {
+    marginTop: 10,
+  },
+
   logoContainer: {
     height: 50,
     width: 50,
