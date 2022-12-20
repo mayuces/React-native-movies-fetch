@@ -3,6 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, KeyboardAvoidingView } from "react-native";
 import { Image, Input, Button } from "@rneui/base";
 import FindMovie from "../components/FindMovie";
+import MovieList from "../components/MovieList";
 
 const HomeScreen = ({ navigation }) => {
   const [movies, setMovies] = useState([]);
@@ -23,6 +24,7 @@ const HomeScreen = ({ navigation }) => {
       <View>
         <FindMovie onAdd={addMovie} />
         {/* <Button onPress={() => navigation.navigate("Movie")} title="Movie" /> */}
+        <MovieList movies={movies} />
       </View>
     </KeyboardAvoidingView>
   );
