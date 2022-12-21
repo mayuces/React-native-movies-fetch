@@ -1,69 +1,112 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import {
-  StyleSheet,
-  Text,
-  View,
-  KeyboardAvoidingView,
-  SafeAreaView,
-} from "react-native";
-import { Image, Input, Button } from "@rneui/base";
+import { StyleSheet, Text, View, SafeAreaView } from "react-native";
+import { Image, Input, Button, Avatar } from "@rneui/base";
 import FindMovie from "../components/FindMovie";
 import MovieList from "../components/MovieList";
+import { ShowType, SortType } from "../types/type";
 
 const HomeScreen = ({ navigation }) => {
   const [movies, setMovies] = useState([]);
   const [tvShows, setTvShows] = useState([]);
+  const [recentlyViewed, setRecentlyViewed] = useState([]);
 
-  const addMovie = (newMovie) => {
-    if (movies.find((movie) => movie.imdbId === newMovie.imdbId)) {
-      return;
-    }
+  const addMovie = useCallback(
+    (newMovie) => {
+      if (movies.find((movie) => movie.imdbId === newMovie.imdbId)) {
+        return;
+      }
 
-    if (newMovie.type === "movie") {
-      const newMovieList = [...movies];
+      if (newMovie.type === "movie") {
+        const newMovieList = [...movies];
 
-      setMovies([...newMovieList, newMovie]);
-    } else {
-      const newTvShowsList = [...tvShows];
+        setMovies([...newMovieList, newMovie]);
+      } else {
+        const newTvShowsList = [...tvShows];
 
-      setTvShows([...newTvShowsList, newMovie]);
-    }
-  };
+        setTvShows([...newTvShowsList, newMovie]);
+      }
+    },
+    [movies, tvShows]
+  );
 
-  const deleteMovie = (showId, showType) => {
-    if (showType === "movie") {
-      const unDeletedMovies = movies.filter((movie) => movie.imdbId !== showId);
+  const deleteMovie = useCallback(
+    (showId, showType) => {
+      if (showType === "movie") {
+        const unDeletedMovies = movies.filter(
+          (movie) => movie.imdbId !== showId
+        );
 
-      setMovies([...unDeletedMovies]);
-    } else {
-      const unDeletedTvShows = tvShows.filter(
-        (tvShow) => tvShow.imdbId !== showId
+        setMovies([...unDeletedMovies]);
+      } else {
+        const unDeletedTvShows = tvShows.filter(
+          (tvShow) => tvShow.imdbId !== showId
+        );
+
+        setTvShows([...unDeletedTvShows]);
+      }
+    },
+    [movies, tvShows]
+  );
+
+  const onRecentlyViewed = useCallback(
+    (recentMovie) => {
+      if (recentlyViewed.find((movie) => movie.imdbId === recentMovie.imdbId)) {
+        return;
+      }
+
+      const newRecentlyViewedList = [...recentlyViewed];
+
+      setRecentlyViewed([...newRecentlyViewedList, recentMovie]);
+    },
+    [recentlyViewed]
+  );
+
+  const sortShows = (type, shows) => {
+    if (type === SortType.Year) {
+      const newListbyYear = [...shows];
+
+      newListbyYear.sort(
+        (s1, s2) =>
+          Number(s2.released.split(" ")[2]) - Number(s1.released.split(" ")[2])
       );
 
-      setTvShows([...unDeletedTvShows]);
+      return newListbyYear;
     }
-  };
 
-  const orderByYear = (shows) => {
-    const newListbyYear = [...shows];
-
-    newListbyYear.sort(
-      (s1, s2) =>
-        Number(s2.released.split(" ")[2]) - Number(s1.released.split(" ")[2])
-    );
-
-    console.log("====================================");
-    console.log(newListbyYear);
-    console.log("====================================");
-  };
-
-  const orderByAlphabet = (shows) => {
     const newListbyAlphabet = [...shows];
 
     if (newListbyAlphabet.length > 1) {
-      newListbyAlphabet.sort((s1, s2) => s1.localeCompare(s2));
+      newListbyAlphabet.sort((s1, s2) => s1.title.localeCompare(s2.title));
     }
+
+    return newListbyAlphabet;
+  };
+
+  const orderByYear = (type) => {
+    if (type === ShowType.Movie) {
+      const newListbyYear = sortShows(SortType.Year, movies);
+
+      setMovies(newListbyYear);
+      return;
+    }
+
+    const newListbyYear = sortShows(SortType.Year, tvShows);
+
+    setTvShows(newListbyYear);
+  };
+
+  const orderByAlphabet = (type) => {
+    if (type === ShowType.Movie) {
+      const newListbyAlphabet = sortShows(SortType.Alphabet, movies);
+
+      setMovies(newListbyAlphabet);
+      return;
+    }
+
+    const newListbyAlphabet = sortShows(SortType.Alphabet, tvShows);
+
+    setTvShows(newListbyAlphabet);
   };
 
   return (
@@ -78,13 +121,13 @@ const HomeScreen = ({ navigation }) => {
             <View style={styles.buttonContainer}>
               <Button
                 title="Alphabetical"
-                onPress={orderByAlphabet(movies)}
+                onPress={() => orderByAlphabet(ShowType.Movie)}
                 color="#25D366"
               />
               <Button
                 style={{ marginLeft: 10 }}
                 title="Year"
-                onPress={orderByYear(movies)}
+                onPress={() => orderByYear(ShowType.Movie)}
                 color="#25D366"
               />
             </View>
@@ -93,6 +136,7 @@ const HomeScreen = ({ navigation }) => {
             movies={movies}
             navigation={navigation}
             deleteMovie={deleteMovie}
+            onRecentlyViewed={onRecentlyViewed}
           />
         </View>
         <View style={styles.tvContainer}>
@@ -102,19 +146,31 @@ const HomeScreen = ({ navigation }) => {
             <View style={styles.buttonContainer}>
               <Button
                 title="Alphabetical"
-                onPress={orderByAlphabet(movies)}
+                onPress={() => orderByAlphabet(ShowType.Tvshow)}
                 color="#25D366"
               />
               <Button
                 style={{ marginLeft: 10 }}
                 title="Year"
-                onPress={orderByYear(tvShows)}
+                onPress={() => orderByYear(ShowType.Tvshow)}
                 color="#25D366"
               />
             </View>
           </View>
           <MovieList
             movies={tvShows}
+            navigation={navigation}
+            deleteMovie={deleteMovie}
+            onRecentlyViewed={onRecentlyViewed}
+          />
+        </View>
+        <View style={styles.tvContainer}>
+          <Text style={{ fontSize: 20, fontWeight: "700" }}>
+            Recently Viewed:{" "}
+          </Text>
+
+          <MovieList
+            movies={recentlyViewed}
             navigation={navigation}
             deleteMovie={deleteMovie}
           />
@@ -147,5 +203,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
     flexDirection: "row",
+    marginBottom: 10,
   },
 });

@@ -1,11 +1,4 @@
-import {
-  Dimensions,
-  Modal,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { Image, Button } from "@rneui/base";
 import ChipGroup from "../components/ChipGroup";
@@ -14,8 +7,6 @@ const MovieScreen = ({ navigation, route }) => {
   const { params } = route;
 
   const genres = params.genres.split(", ");
-
-  console.log("genres:", genres);
 
   return (
     <View style={styles.container}>

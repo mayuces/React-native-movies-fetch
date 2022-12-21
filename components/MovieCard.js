@@ -4,15 +4,30 @@ import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 
-const MovieCard = ({ movie, navigation, deleteMovie }) => {
+const MovieCard = ({
+  movie,
+  navigation,
+  deleteMovie,
+  onRecentlyViewed,
+  context = "showList",
+}) => {
   const handleCardLink = () => {
     nav.navigate("Movie", movie);
   };
 
   const nav = useNavigation();
 
+  const shouldRenderDeleteButton = context !== "preview";
+
+  const handlePress = () => {
+    if (context === "showList") {
+      handleCardLink();
+      onRecentlyViewed(movie);
+    }
+  };
+
   return (
-    <TouchableOpacity style={styles.item} onPress={handleCardLink}>
+    <TouchableOpacity style={styles.item} onPress={handlePress}>
       <Image
         style={styles.poster}
         source={{
@@ -28,13 +43,15 @@ const MovieCard = ({ movie, navigation, deleteMovie }) => {
         >
           {movie.title}
         </Text>
-        <AntDesign
-          name="delete"
-          type="antdesign"
-          size={24}
-          color="black"
-          onPress={() => deleteMovie(movie.imdbId, movie.type)}
-        />
+        {shouldRenderDeleteButton && (
+          <AntDesign
+            name="delete"
+            type="antdesign"
+            size={24}
+            color="black"
+            onPress={() => deleteMovie(movie.imdbId, movie.type)}
+          />
+        )}
       </View>
     </TouchableOpacity>
   );

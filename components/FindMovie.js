@@ -91,7 +91,7 @@ const FindMovie = ({ onAdd }) => {
       {movie ? (
         <View>
           <Text h2>Preview</Text>
-          <MovieCard movie={movie} />
+          <MovieCard movie={movie} context="preview" />
           <Button
             title="Add to List"
             color="#25D366"
