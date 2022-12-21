@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, SafeAreaView } from "react-native";
+import { StyleSheet, Text, View, SafeAreaView, ScrollView } from "react-native";
 import { Image, Input, Button, Avatar } from "@rneui/base";
 import FindMovie from "../components/FindMovie";
 import MovieList from "../components/MovieList";
@@ -110,72 +110,74 @@ const HomeScreen = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView>
       <StatusBar style="light" />
-      <View>
-        <FindMovie onAdd={addMovie} />
-        <View>
-          <Text style={{ fontSize: 20, fontWeight: "700" }}>Movies</Text>
-          <View style={styles.orderContainer}>
-            <Text style={{ fontSize: 18, fontWeight: "600" }}>Order By:</Text>
-            <View style={styles.buttonContainer}>
-              <Button
-                title="Alphabetical"
-                onPress={() => orderByAlphabet(ShowType.Movie)}
-                color="#25D366"
-              />
-              <Button
-                style={{ marginLeft: 10 }}
-                title="Year"
-                onPress={() => orderByYear(ShowType.Movie)}
-                color="#25D366"
-              />
+      <ScrollView>
+        <View style={styles.container}>
+          <FindMovie onAdd={addMovie} />
+          <View>
+            <Text style={{ fontSize: 20, fontWeight: "700" }}>Movies</Text>
+            <View style={styles.orderContainer}>
+              <Text style={{ fontSize: 18, fontWeight: "600" }}>Order By:</Text>
+              <View style={styles.buttonContainer}>
+                <Button
+                  title="Alphabetical"
+                  onPress={() => orderByAlphabet(ShowType.Movie)}
+                  color="#25D366"
+                />
+                <Button
+                  style={{ marginLeft: 5 }}
+                  title="Year"
+                  onPress={() => orderByYear(ShowType.Movie)}
+                  color="#25D366"
+                />
+              </View>
             </View>
+            <MovieList
+              movies={movies}
+              navigation={navigation}
+              deleteMovie={deleteMovie}
+              onRecentlyViewed={onRecentlyViewed}
+            />
           </View>
-          <MovieList
-            movies={movies}
-            navigation={navigation}
-            deleteMovie={deleteMovie}
-            onRecentlyViewed={onRecentlyViewed}
-          />
-        </View>
-        <View style={styles.tvContainer}>
-          <Text style={{ fontSize: 20, fontWeight: "700" }}>Tv Shows</Text>
-          <View style={styles.orderContainer}>
-            <Text style={{ fontSize: 18, fontWeight: "600" }}>Order By:</Text>
-            <View style={styles.buttonContainer}>
-              <Button
-                title="Alphabetical"
-                onPress={() => orderByAlphabet(ShowType.Tvshow)}
-                color="#25D366"
-              />
-              <Button
-                style={{ marginLeft: 10 }}
-                title="Year"
-                onPress={() => orderByYear(ShowType.Tvshow)}
-                color="#25D366"
-              />
+          <View style={styles.tvContainer}>
+            <Text style={{ fontSize: 20, fontWeight: "700" }}>Tv Shows</Text>
+            <View style={styles.orderContainer}>
+              <Text style={{ fontSize: 18, fontWeight: "600" }}>Order By:</Text>
+              <View style={styles.buttonContainer}>
+                <Button
+                  title="Alphabetical"
+                  onPress={() => orderByAlphabet(ShowType.Tvshow)}
+                  color="#25D366"
+                />
+                <Button
+                  style={{ marginLeft: 5 }}
+                  title="Year"
+                  onPress={() => orderByYear(ShowType.Tvshow)}
+                  color="#25D366"
+                />
+              </View>
             </View>
+            <MovieList
+              movies={tvShows}
+              navigation={navigation}
+              deleteMovie={deleteMovie}
+              onRecentlyViewed={onRecentlyViewed}
+            />
           </View>
-          <MovieList
-            movies={tvShows}
-            navigation={navigation}
-            deleteMovie={deleteMovie}
-            onRecentlyViewed={onRecentlyViewed}
-          />
-        </View>
-        <View style={styles.tvContainer}>
-          <Text style={{ fontSize: 20, fontWeight: "700" }}>
-            Recently Viewed:{" "}
-          </Text>
+          <View style={styles.tvContainer}>
+            <Text style={{ fontSize: 20, fontWeight: "700" }}>
+              Recently Viewed:{" "}
+            </Text>
 
-          <MovieList
-            movies={recentlyViewed}
-            navigation={navigation}
-            deleteMovie={deleteMovie}
-          />
+            <MovieList
+              movies={recentlyViewed}
+              navigation={navigation}
+              deleteMovie={deleteMovie}
+            />
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -201,7 +203,7 @@ const styles = StyleSheet.create({
 
   buttonContainer: {
     flex: 1,
-    justifyContent: "flex-end",
+    justifyContent: "space-evenly",
     flexDirection: "row",
     marginBottom: 10,
   },
