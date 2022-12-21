@@ -1,38 +1,70 @@
-import { Dimensions, StyleSheet, Text, View } from "react-native";
+import {
+  Dimensions,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import React from "react";
 import { Image, Button } from "@rneui/base";
+import ChipGroup from "../components/ChipGroup";
 
 const MovieScreen = ({ navigation, route }) => {
   const { params } = route;
 
+  const genres = params.genres.split(", ");
+
+  console.log("genres:", genres);
+
   return (
     <View style={styles.container}>
-      <View style={styles.imageStyler}>
-        <Text style={styles.titleText}>{params.title}</Text>
+      <ScrollView>
         <Image
-          style={styles.imageContainer}
+          style={styles.poster}
+          resizeMode={"cover"}
           source={{ uri: `${params.imgUrl}` }}
         />
-      </View>
-      <View>
-        <View>
-          <Text>{params.description}</Text>
-          <Text
-            style={{ color: "blue" }}
-            onPress={() => Linking.openURL(params.imdbUrl)}
+        <View style={{ flex: 1, backgroundColor: "grey", padding: 20 }}>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
           >
-            IMDB
-          </Text>
+            <View
+              style={{
+                flexWrap: "wrap",
+                flexDirection: "column",
+              }}
+            >
+              <Text style={{ fontSize: 17, fontWeight: "700" }}>
+                {params.title}
+              </Text>
+              <Text>{params.released}</Text>
+            </View>
+            <View
+              style={{
+                width: 48,
+                height: 48,
+                backgroundColor: "white",
+                borderRadius: 24,
+                justifyContent: "center",
+                alignItems: "center",
+                marginLeft: 5,
+              }}
+            >
+              <Text>{params.metaScore}</Text>
+            </View>
+          </View>
+          <ChipGroup datas={genres} />
+          <Text style={styles.header}>Overview</Text>
+          <Text>{params.description}</Text>
+          <Text style={styles.header}>Directed By: {params.writer}</Text>
         </View>
-        <View>
-          <Text>Language: {params.language}</Text>
-          <Text>MetaCritic: {params.metaScore}</Text>
-          <Text>Rated: {params.rated}</Text>
-          <Text>Released: {params.released}</Text>
-          <Text>Writer: {params.writer}</Text>
-          <Text>Actors: {params.actors}</Text>
-        </View>
-      </View>
+      </ScrollView>
     </View>
   );
 };
@@ -42,40 +74,13 @@ export default MovieScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 10,
-    marginTop: 20,
-    height: 300,
   },
-
-  imageStyler: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+  poster: {
+    height: 301,
   },
-
-  titleText: {
-    fontSize: 20,
+  header: {
+    fontSize: 22,
     fontWeight: "bold",
-    marginBottom: 20,
-  },
-
-  mediaContainer: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  imageContainer: {
-    width: Dimensions.get("window").width * 0.8,
-    height: Dimensions.get("window").width * 0.8,
-    resizeMode: "cover",
-  },
-  logoContainer: {
-    height: 50,
-    width: 50,
+    marginTop: 10,
   },
 });

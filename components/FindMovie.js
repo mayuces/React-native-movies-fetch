@@ -49,7 +49,8 @@ const FindMovie = ({ onAdd }) => {
         released: data.Released,
         writer: data.Writer,
         actors: data.Actors,
-        // type: data.Type,
+        type: data.Type,
+        genres: data.Genre,
       };
 
       setMovie(loadedMovie);
@@ -87,7 +88,7 @@ const FindMovie = ({ onAdd }) => {
         </View>
       ) : null}
 
-      {movie && (
+      {movie ? (
         <View>
           <Text h2>Preview</Text>
           <MovieCard movie={movie} />
@@ -103,7 +104,7 @@ const FindMovie = ({ onAdd }) => {
             Add to the list
           </Button>
         </View>
-      )}
+      ) : null}
     </SafeAreaView>
   );
 };
